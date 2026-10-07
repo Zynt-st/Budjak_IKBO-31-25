@@ -67,3 +67,87 @@ cp "$1" /usr/local/bin/
 Задание 6
 Написать программу для проверки наличия комментария в первой строке файлов с расширениями c, js и py.
 ```
+nano check comment
+chmod +x check comment
+./check comment hello.c
+```
+
+```
+#!/bin/bash
+file="$1"
+
+# Достаём первую строку из файла
+first_line=$(head -n 1 "$file")
+
+# Проверяем расширение файла и наличие комментария в первой строке
+if [[ "$file" == *.c ]] || [[ "$file" == *.js ]]; then
+    if echo "$first_line" | grep -q -E "^([[:space:]]*//|[[:space:]]*/\*)"; then
+        echo "В первой строке есть комментарий"
+    else
+        echo "В первой строке нет комментария"
+    fi
+elif [[ "$file" == *.py ]]; then
+    if echo "$first_line" | grep -q -E "^[[:space:]]*#"; then
+        echo "В первой строке есть комментарий"
+    else
+        echo "В первой строке нет комментария"
+    fi
+else
+    echo "Неизвестное расширение файла (поддерживаются только .c, .js, .py)"
+fi
+```
+
+Задание 7
+Написать программу для нахождения файлов-дубликатов (имеющих 1 или более копий содержимого) по заданному пути (и подкаталогам).
+```
+nano find_duplicates
+chmod +x find_duplicates
+./find_duplicates
+```
+
+```
+#!/bin/bash
+dir="${1:-.}"
+find "$dir" -type f -exec md5sum {} + | sort | uniq -w 32 -d --all-repeated=separate
+```
+
+Задача 8
+Написать программу, которая находит все файлы в данном каталоге с расширением, указанным в качестве аргумента и архивирует все эти файлы в архив tar.
+```
+nano archive_files
+chmod +x archive_files
+./archive_files c
+```
+
+```
+#!/bin/bash
+ext="$1"
+tar -cvf archive.tar *."$ext"
+```
+
+Задача 9
+Написать программу, которая заменяет в файле последовательности из 4 пробелов на символ табуляции. Входной и выходной файлы задаются аргументами.
+```
+nano spaces_to_tabs
+chmod +x spaces_to_tabs
+./spaces_to_tabs input. txt output. txt
+cat output. txt
+```
+
+```
+#!/bin/bash
+sed 's/    /\t/g' "$1" > "$2"
+```
+
+Задача 10
+Написать программу, которая выводит названия всех пустых текстовых файлов в указанной директории. Директория передается в программу параметром.
+```
+nano find_empty
+chmod +x find_empty
+./find_empty test_folder
+```
+
+```
+#!/bin/bash
+find "$1" -maxdepth 1 -type f -empty
+```
